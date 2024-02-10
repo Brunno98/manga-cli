@@ -1,0 +1,19 @@
+FROM container-registry.oracle.com/graalvm/native-image:21-ol8 AS BUILD
+#RUN microdnf update -y && \
+#microdnf install -y maven gcc glibc-devel zlib-devel libstdc++-devel gcc-c++ && \
+#microdnf clean all
+WORKDIR /app
+COPY ./mvnw ./mvnw
+# clean up the file
+RUN sed -i 's/\r$//' mvnw
+COPY .mvn .mvn
+COPY pom.xml .
+RUN ./mvnw dependency:go-offline
+COPY src src
+RUN ./mvnw native:compile -Pnative -DskipTests
+
+FROM ghcr.io/graalvm/jdk-community:17 as FINAL
+
+COPY --from=BUILD /app/target/manga-cli .
+
+ENTRYPOINT ["./manga-cli"]
