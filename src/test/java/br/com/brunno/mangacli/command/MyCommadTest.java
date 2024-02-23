@@ -1,21 +1,15 @@
 package br.com.brunno.mangacli.command;
 
 import br.com.brunno.mangacli.client.MangadexClient;
+import br.com.brunno.mangacli.repository.MangaRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.test.ShellAssertions;
 import org.springframework.shell.test.ShellTestClient;
 import org.springframework.shell.test.ShellTestClient.InteractiveShellSession;
-import org.springframework.shell.test.autoconfigure.AutoConfigureShell;
-import org.springframework.shell.test.autoconfigure.AutoConfigureShellTestClient;
 import org.springframework.shell.test.autoconfigure.ShellTest;
-import org.springframework.shell.test.autoconfigure.ShellTestContextBootstrapper;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.BootstrapWith;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +24,9 @@ public class MyCommadTest {
 
     @MockBean
     MangadexClient mangadexClient;
+
+    @MockBean
+    MangaRepository mangaRepository;
 
     @Test
     void givenANameWhenHelloWorldCommandShouldGreeting() {

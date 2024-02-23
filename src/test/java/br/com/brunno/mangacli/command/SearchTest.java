@@ -5,6 +5,7 @@ import br.com.brunno.mangacli.client.dto.FindedMangaData;
 import br.com.brunno.mangacli.client.dto.LanguageOption;
 import br.com.brunno.mangacli.client.dto.MangaAttributes;
 import br.com.brunno.mangacli.client.dto.SearchMangaResult;
+import br.com.brunno.mangacli.repository.MangaRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class SearchTest {
 
     @MockBean
     MangadexClient mangadexClient;
+
+    @MockBean
+    MangaRepository mangaRepository;
 
     @Test
     void givenATitleWhenSearchCommandShouldReturnOptionsOfManga() {
