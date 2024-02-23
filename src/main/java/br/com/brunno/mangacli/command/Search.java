@@ -9,6 +9,7 @@ import br.com.brunno.mangacli.view.SearchMangaView;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.jline.terminal.Terminal;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -23,6 +24,7 @@ public class Search {
     public static final int FIRST_PAGE = 1;
 
     private final MangadexClient mangadexClient;
+    private final Terminal terminal;
 
     @ShellMethod(key = "search", value = "Search manga by title in 'https://mangadex.org'")
     public String searchManga(
@@ -47,6 +49,6 @@ public class Search {
 
         int maxPage = PageUtil.totalPages(result.total(), LIMIT_ROWS_RETURNED);
 
-        return SearchMangaView.build(mangas, page, maxPage);
+        return SearchMangaView.build(mangas, page, maxPage, terminal.getWidth());
     }
 }

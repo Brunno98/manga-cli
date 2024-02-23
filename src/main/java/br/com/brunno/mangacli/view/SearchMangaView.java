@@ -4,6 +4,7 @@ import br.com.brunno.mangacli.model.Manga;
 import br.com.brunno.mangacli.util.PageUtil;
 import org.springframework.shell.table.ArrayTableModel;
 import org.springframework.shell.table.BorderStyle;
+import org.springframework.shell.table.Table;
 import org.springframework.shell.table.TableBuilder;
 
 import java.util.List;
@@ -13,13 +14,13 @@ import static java.lang.String.format;
 public class SearchMangaView {
     public static final String[] HEADER = new String[] {"id", "title", "description"};
 
-    public static String build(List<Manga> mangas, int page, int maxPage) {
-        String main = buildMain(mangas);
+    public static String build(List<Manga> mangas, int page, int maxPage, int screenWidth) {
+        String main = buildMain(mangas).render(screenWidth);
         String footer = buildFooter(page, maxPage);
         return String.join("\n", main, footer);
     }
 
-    private static String buildMain(List<Manga> mangas) {
+    private static Table buildMain(List<Manga> mangas) {
         String[][] data = new String[mangas.size()+1][HEADER.length];
         data[0] = HEADER;
         for (int i = 0; i < mangas.size(); i++) {
@@ -36,7 +37,7 @@ public class SearchMangaView {
         ArrayTableModel tableModel = new ArrayTableModel(data);
         TableBuilder tableBuilder = new TableBuilder(tableModel);
         tableBuilder.addHeaderAndVerticalsBorders(BorderStyle.air);
-        return tableBuilder.build().render(100);
+        return tableBuilder.build();
     }
 
     private static String buildFooter(int page, int maxPage) {
