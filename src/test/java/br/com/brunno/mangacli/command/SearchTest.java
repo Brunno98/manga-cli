@@ -1,31 +1,22 @@
 package br.com.brunno.mangacli.command;
 
+import br.com.brunno.mangacli.BaseShellTest;
 import br.com.brunno.mangacli.client.MangadexClient;
-import br.com.brunno.mangacli.client.dto.FindedMangaData;
-import br.com.brunno.mangacli.client.dto.LanguageOption;
-import br.com.brunno.mangacli.client.dto.MangaAttributes;
 import br.com.brunno.mangacli.client.dto.SearchMangaResult;
 import br.com.brunno.mangacli.repository.MangaRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.shell.test.ShellAssertions;
 import org.springframework.shell.test.ShellTestClient;
-import org.springframework.shell.test.ShellTestClient.InteractiveShellSession;
-import org.springframework.shell.test.autoconfigure.ShellTest;
-import org.springframework.test.annotation.DirtiesContext;
+import testHelpers.SearchMangaResultBuilder;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 
-@ShellTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class SearchTest {
+public class SearchTest extends BaseShellTest {
 
     @Autowired
     ShellTestClient client;
@@ -38,58 +29,26 @@ public class SearchTest {
 
     @Test
     void givenATitleWhenSearchCommandShouldReturnOptionsOfManga() {
-        Mockito.doReturn(buildSearchMangaResult()).when(mangadexClient).searchManga(any(), anyInt(), anyInt());
+        SearchMangaResult searchMangaResult = SearchMangaResultBuilder.builder()
+                .withResult("OK")
+                .withFindedManga("1", "someManga", "some description")
+                .withFindedManga("2", "someManga 2", "another description")
+                .build();
+        Mockito.doReturn(searchMangaResult).when(mangadexClient).searchManga(any(), anyInt(), anyInt());
 
-        InteractiveShellSession session = client.interactive().run();
+        ShellTestClient.BaseShellSession<?> session = createSession("search someManga", true);
 
-        session.write(session
-                    .writeSequence()
-                    .text("search someManga")
-                    .carriageReturn()
-                    .build()
-        );
-
-        await().atMost(2, TimeUnit.SECONDS).untilAsserted(() -> ShellAssertions.assertThat(session.screen())
-                .containsText("someManga").containsText("someManga 2"));
+        assertScreenContainsText(session, "someManga");
+        assertScreenContainsText(session, "someManga 2");
     }
 
     @Test
     void whenNotFoundMangaShouldOutputNotFound() {
-        Mockito.doReturn(SearchMangaResult.builder().result("ok").data(List.of()).build())
+        Mockito.doReturn(SearchMangaResultBuilder.builder().withResult("OK").withoutManga().build())
                 .when(mangadexClient).searchManga(any(), anyInt(), anyInt());
 
-        InteractiveShellSession session = client.interactive().run();
+        ShellTestClient.BaseShellSession<?> session = createSession("search Inexistent", true);
 
-        session.write(session
-                .writeSequence()
-                .text("search Inexistent")
-                .carriageReturn()
-                .build()
-        );
-
-        await().atMost(1, TimeUnit.SECONDS).untilAsserted(() -> ShellAssertions.assertThat(session.screen())
-                .containsText("Not found manga"));
-    }
-
-    private SearchMangaResult buildSearchMangaResult() {
-        return new SearchMangaResult(
-                "ok", List.of(
-                new FindedMangaData(
-                        "1",
-                        new MangaAttributes(
-                                new LanguageOption("someManga"),
-                                new LanguageOption("some description")
-                        )
-                ),
-                new FindedMangaData(
-                        "2",
-                        new MangaAttributes(
-                                new LanguageOption("someManga 2"),
-                                new LanguageOption("another description")
-                        )
-                )
-            ),
-        2
-        );
+        assertScreenContainsText(session, "Not found manga");
     }
 }
