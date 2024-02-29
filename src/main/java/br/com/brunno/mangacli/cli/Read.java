@@ -1,7 +1,7 @@
-package br.com.brunno.mangacli.command;
+package br.com.brunno.mangacli.cli;
 
-import br.com.brunno.mangacli.model.Manga;
-import br.com.brunno.mangacli.repository.MangaRepository;
+import br.com.brunno.mangacli.manga.Manga;
+import br.com.brunno.mangacli.manga.MangaRepository;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
@@ -17,18 +17,18 @@ public class Read {
     private final MangaRepository mangaRepository;
 
     @ShellMethod(key = "read", value = "Update your manga's chapters readed")
-    public String readManga(
+    public void readManga(
             String mangaId,
             @ShellOption(defaultValue = "1", help = "quantity of chapters readed") @Min(1) int quantity
     ) {
         Optional<Manga> searchById = mangaRepository.findById(mangaId);
-        if (searchById.isEmpty()) return "Manga not found";
+//        if (searchById.isEmpty()) return "Manga not found";
         Manga manga = searchById.get();
 
         manga.readChapters(quantity);
 
         mangaRepository.save(manga);
 
-        return new List(mangaRepository).listMangas();
+//        return new List(mangaRepository).listMangas();
     }
 }

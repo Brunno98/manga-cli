@@ -1,3 +1,3 @@
-package br.com.brunno.mangacli.client.dto;
+package br.com.brunno.mangacli.mangadex.dto;
 
 public record LanguageOption(String en) {}

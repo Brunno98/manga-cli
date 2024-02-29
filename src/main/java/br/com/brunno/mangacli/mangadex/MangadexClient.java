@@ -1,8 +1,8 @@
-package br.com.brunno.mangacli.client;
+package br.com.brunno.mangacli.mangadex;
 
-import br.com.brunno.mangacli.client.dto.MangaChaptersDto;
-import br.com.brunno.mangacli.client.dto.MangaDto;
-import br.com.brunno.mangacli.client.dto.SearchMangaResult;
+import br.com.brunno.mangacli.mangadex.dto.MangaChaptersDto;
+import br.com.brunno.mangacli.mangadex.dto.MangaDto;
+import br.com.brunno.mangacli.mangadex.dto.SearchMangaResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

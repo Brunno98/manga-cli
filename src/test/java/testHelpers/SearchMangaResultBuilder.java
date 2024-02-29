@@ -1,10 +1,9 @@
 package testHelpers;
 
-import br.com.brunno.mangacli.client.dto.FindedMangaData;
-import br.com.brunno.mangacli.client.dto.LanguageOption;
-import br.com.brunno.mangacli.client.dto.MangaAttributes;
-import br.com.brunno.mangacli.client.dto.SearchMangaResult;
-import br.com.brunno.mangacli.view.ListChaptersView;
+import br.com.brunno.mangacli.mangadex.dto.FindedMangaData;
+import br.com.brunno.mangacli.mangadex.dto.LanguageOption;
+import br.com.brunno.mangacli.mangadex.dto.MangaAttributes;
+import br.com.brunno.mangacli.mangadex.dto.SearchMangaResult;
 
 import java.util.ArrayList;
 import java.util.List;

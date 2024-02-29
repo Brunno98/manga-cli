@@ -1,10 +1,8 @@
-package br.com.brunno.mangacli.command;
+package br.com.brunno.mangacli.cli;
 
-import br.com.brunno.mangacli.client.MangadexClient;
-import br.com.brunno.mangacli.client.dto.MangaChaptersDto;
-import br.com.brunno.mangacli.model.Chapter;
-import br.com.brunno.mangacli.util.PageUtil;
-import br.com.brunno.mangacli.view.ListChaptersView;
+import br.com.brunno.mangacli.manga.Chapter;
+import br.com.brunno.mangacli.mangadex.MangadexClient;
+import br.com.brunno.mangacli.mangadex.dto.MangaChaptersDto;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
@@ -25,7 +23,7 @@ public class Chapters {
     private final MangadexClient mangadexClient;
 
     @ShellMethod(key = "chapters", value = "List of manga's chapters available in 'https://mangadex.org'")
-    public String listChapters(
+    public void listChapters(
             @ShellOption String mangaId,
             @ShellOption(defaultValue = "1", help = "page number to view") @Min(FIRST_PAGE) int page
     ) {
@@ -42,8 +40,8 @@ public class Chapters {
             return new Chapter(id, title, chapterNumber, externalUrl, createdAt, updatedAt);
         }).collect(Collectors.toList());
 
-        int maxPage = PageUtil.totalPages(mangaChaptersDto.total(), LIMIT_LIST);
-
-        return ListChaptersView.build(chapters, page, maxPage);
+//        int maxPage = PageUtil.totalPages(mangaChaptersDto.total(), LIMIT_LIST);
+//
+//        return ListChaptersView.build(chapters, page, maxPage);
     }
 }

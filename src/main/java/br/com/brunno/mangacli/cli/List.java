@@ -1,8 +1,7 @@
-package br.com.brunno.mangacli.command;
+package br.com.brunno.mangacli.cli;
 
-import br.com.brunno.mangacli.model.Manga;
-import br.com.brunno.mangacli.repository.MangaRepository;
-import br.com.brunno.mangacli.view.ListMangaView;
+import br.com.brunno.mangacli.manga.Manga;
+import br.com.brunno.mangacli.manga.MangaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
@@ -15,11 +14,11 @@ public class List {
 
     //TODO: to implement pagination on findAll
     @ShellMethod(key = "list", value = "List of your tracked mangas")
-    public String listMangas() {
+    public void listMangas() {
         java.util.List<Manga> all = mangaRepository.findAll();
-        if (all.isEmpty()) return "No one manga added yet";
+//        if (all.isEmpty()) return "No one manga added yet";
 
-        return ListMangaView.build(all);
+//        return ListMangaView.build(all);
     }
 
 }

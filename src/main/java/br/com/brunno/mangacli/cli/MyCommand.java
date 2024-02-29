@@ -1,4 +1,4 @@
-package br.com.brunno.mangacli.command;
+package br.com.brunno.mangacli.cli;
 
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;

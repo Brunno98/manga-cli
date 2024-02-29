@@ -1,8 +1,8 @@
-package br.com.brunno.mangacli.command;
+package br.com.brunno.mangacli.cli;
 
 import br.com.brunno.mangacli.BaseShellTest;
-import br.com.brunno.mangacli.client.MangadexClient;
-import br.com.brunno.mangacli.repository.MangaRepository;
+import br.com.brunno.mangacli.mangadex.MangadexClient;
+import br.com.brunno.mangacli.manga.MangaRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;

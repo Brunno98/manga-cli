@@ -1,4 +1,4 @@
-package br.com.brunno.mangacli.model;
+package br.com.brunno.mangacli.manga;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
