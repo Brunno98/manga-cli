@@ -35,6 +35,12 @@ public class Add {
         log.debug("Buscando manga por titulo {}", title);
         SearchMangaResult result = mangadexClient.searchManga(title, MAX_ROWS_RETURNED, 0);
 
+        if (result == null || result.isEmpty()) {
+            log.debug("Not found manga with title {}", title);
+            write("Not found.");
+            return;
+        }
+
         List<Manga> mangas = toMangaList(result);
 
         if (mangas.size() > 1) {
@@ -63,15 +69,11 @@ public class Add {
             return;
         }
 
-        if (mangas.size() == 1) {
-            log.debug("Encontrado exatamente 1 manga pelo titulo {}", title);
-            Manga manga = mangas.get(0);
-            mangaRepository.save(manga);
-            write("Manga added!");
-            log.debug("Manga {} salvo com sucesso sem necessidade do usuario escolher", title);
-            return;
-        }
-        write("Not found.");
+        log.debug("Encontrado exatamente 1 manga pelo titulo {}", title);
+        Manga manga = mangas.get(0);
+        mangaRepository.save(manga);
+        write("Manga added!");
+        log.debug("Manga {} salvo com sucesso sem necessidade do usuario escolher", title);
     }
 
     private static List<Manga> toMangaList(SearchMangaResult result) {

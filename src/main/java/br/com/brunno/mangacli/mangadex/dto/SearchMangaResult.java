@@ -9,4 +9,8 @@ public record SearchMangaResult(
         String result,
         List<FindedMangaData> data,
         int total
-) {}
+) {
+    public boolean isEmpty() {
+        return data == null || data().isEmpty();
+    }
+}
