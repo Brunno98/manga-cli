@@ -4,6 +4,7 @@ import br.com.brunno.mangacli.manga.Manga;
 import br.com.brunno.mangacli.manga.MangaRepository;
 import br.com.brunno.mangacli.mangadex.MangadexClient;
 import br.com.brunno.mangacli.mangadex.dto.FindedMangaData;
+import br.com.brunno.mangacli.mangadex.dto.MangaChaptersDto;
 import br.com.brunno.mangacli.mangadex.dto.SearchMangaResult;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +57,12 @@ public class Add extends AbstractShellComponent {
             log.debug("Encontrado exatamente 1 manga pelo titulo {}", title);
             manga = mangas.get(0);
         }
+        log.debug("Manga selecionado: title {} - id: {}", manga.getTitle(), manga.getId() );
+
+        MangaChaptersDto mangaChaptersDto = mangadexClient.listChapters(manga.getId(), 0, "desc", "en", 0);
+        if (mangaChaptersDto != null) {
+            manga.setTotalChapters(mangaChaptersDto.total());
+        }
 
         mangaRepository.save(manga);
         log.debug("Manga {} salvo com sucesso", title);
@@ -69,7 +76,7 @@ public class Add extends AbstractShellComponent {
                 .map(manga -> SelectorItem.of(manga.getTitle(), manga)).collect(Collectors.toList());
 
         SingleItemSelector<Manga, SelectorItem<Manga>> component =
-                new SingleItemSelector<>(getTerminal(), items, "Manga selection", null);
+                new SingleItemSelector<>(getTerminal(), items, "Manga selection: ", null);
 
         component.setResourceLoader(getResourceLoader());
         component.setTemplateExecutor(getTemplateExecutor());
@@ -94,7 +101,7 @@ public class Add extends AbstractShellComponent {
             String id = manga.id();
             String mangaTitle = manga.attributes().title().en();
             String description = manga.attributes().description().en();
-            return new Manga(id, mangaTitle, description, 0, 0);
+            return new Manga(id, mangaTitle, description, 0);
         }).collect(Collectors.toList());
     }
 
