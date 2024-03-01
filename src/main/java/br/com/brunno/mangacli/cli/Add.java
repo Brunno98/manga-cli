@@ -9,7 +9,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jline.terminal.Terminal;
+import org.springframework.shell.component.SingleItemSelector;
 import org.springframework.shell.component.flow.ComponentFlow;
+import org.springframework.shell.component.support.SelectorItem;
+import org.springframework.shell.standard.AbstractShellComponent;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @ShellComponent
-public class Add {
+public class Add extends AbstractShellComponent {
     public static final int MAX_ROWS_RETURNED = 5;
 
     private final ComponentFlow.Builder flowBuilder;
@@ -44,27 +47,27 @@ public class Add {
         List<Manga> mangas = toMangaList(result);
 
         if (mangas.size() > 1) {
-            log.debug("Encontrado exatamente {} mangas pelo titulo {}", mangas.size(), title);
-            HashMap<String, String> singleSelectItems = new HashMap<>();
-            mangas.forEach(manga -> singleSelectItems.put(manga.getTitle(), manga.getTitle()));
-            ComponentFlow flow = flowBuilder.reset().clone()
-                    .withSingleItemSelector("MangaSelection")
-                    .selectItems(singleSelectItems)
-                    .and()
-                    .build();
-            log.debug("Rodando flow de seleção de manga");
-            Object selectionFromFlow = flow.run().getContext().get("MangaSelection");
-            if (selectionFromFlow == null) {
-                log.debug("Flow não returnou resultado");
+            log.debug("Encontrado {} mangas pelo titulo {}", mangas.size(), title);
+            List<SelectorItem<Manga>> items = mangas.stream().map(manga -> SelectorItem.of(manga.getTitle(), manga)).collect(Collectors.toList());
+            SingleItemSelector<Manga, SelectorItem<Manga>> component =
+                    new SingleItemSelector<>(getTerminal(), items, "Manga selection", null);
+            component.setResourceLoader(getResourceLoader());
+            component.setTemplateExecutor(getTemplateExecutor());
+            SingleItemSelector.SingleItemSelectorContext<Manga, SelectorItem<Manga>> context =
+                    component.run(SingleItemSelector.SingleItemSelectorContext.empty());
+            Optional<SelectorItem<Manga>> resultItem = context.getResultItem();
+            if (resultItem.isEmpty()) {
+                log.debug("ERROR: result item from Manga Selection is empty!");
+                write("Error!");
                 return;
             }
-            String mangaSelection = selectionFromFlow.toString();
-            Optional<Manga> optionalManga = mangas.stream().filter(manga -> mangaSelection.equals(manga.getTitle())).findFirst();
-            if (optionalManga.isEmpty()) {
-                log.debug("Resultado do flow de seleçao ({}) não encontrado na lista de mangas", mangaSelection);
+            Manga manga = resultItem.get().getItem();
+            if (manga == null) {
+                log.debug("ERROR: item from Manga Selection is null!");
+                write("Error!");
                 return;
             }
-            mangaRepository.save(optionalManga.get());
+            mangaRepository.save(manga);
             log.debug("Manga salvo com sucesso");
             return;
         }
