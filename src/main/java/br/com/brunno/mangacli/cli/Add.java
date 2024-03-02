@@ -1,5 +1,6 @@
 package br.com.brunno.mangacli.cli;
 
+import br.com.brunno.mangacli.cli.view.SelectMangaView;
 import br.com.brunno.mangacli.manga.Manga;
 import br.com.brunno.mangacli.manga.MangaRepository;
 import br.com.brunno.mangacli.mangadex.MangadexClient;
@@ -10,9 +11,6 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jline.terminal.Terminal;
-import org.springframework.shell.component.SingleItemSelector;
-import org.springframework.shell.component.support.SelectorItem;
-import org.springframework.shell.standard.AbstractShellComponent;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
@@ -24,9 +22,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @ShellComponent
-public class Add extends AbstractShellComponent {
+public class Add {
     public static final int MAX_ROWS_RETURNED = 5;
 
+    private final SelectMangaView selectMangaView;
     private final MangaRepository mangaRepository;
     private final MangadexClient mangadexClient;
     private final Terminal terminal;
@@ -46,7 +45,7 @@ public class Add extends AbstractShellComponent {
 
         Manga manga;
         if (mangas.size() > 1) {
-            Optional<Manga> optionalManga = displaySingleSelectionManga(title, mangas);
+            Optional<Manga> optionalManga = selectMangaView.display(mangas);
             if (optionalManga.isEmpty()) {
                 log.debug("ERROR: item from Manga Selection is null!");
                 write("Error!");
@@ -65,34 +64,8 @@ public class Add extends AbstractShellComponent {
         }
 
         mangaRepository.save(manga);
-        log.debug("Manga {} salvo com sucesso", title);
+        log.debug("Manga {} salvo com sucesso", manga.getTitle());
         write("Manga added!");
-    }
-
-    private Optional<Manga> displaySingleSelectionManga(String title, List<Manga> mangas) {
-        log.debug("Encontrado {} mangas pelo titulo {}", mangas.size(), title);
-
-        List<SelectorItem<Manga>> items = mangas.stream()
-                .map(manga -> SelectorItem.of(manga.getTitle(), manga)).collect(Collectors.toList());
-
-        SingleItemSelector<Manga, SelectorItem<Manga>> component =
-                new SingleItemSelector<>(getTerminal(), items, "Manga selection: ", null);
-
-        component.setResourceLoader(getResourceLoader());
-        component.setTemplateExecutor(getTemplateExecutor());
-
-        SingleItemSelector.SingleItemSelectorContext<Manga, SelectorItem<Manga>> context =
-                component.run(SingleItemSelector.SingleItemSelectorContext.empty());
-
-        Optional<SelectorItem<Manga>> resultItem = context.getResultItem();
-
-        if (resultItem.isEmpty()) {
-            log.debug("ERROR: result item from Manga Selection is empty!");
-            write("Error!");
-            return Optional.empty();
-        }
-
-        return Optional.ofNullable(resultItem.get().getItem());
     }
 
     private static List<Manga> toMangaList(SearchMangaResult result) {

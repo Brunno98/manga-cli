@@ -1,18 +1,21 @@
 package br.com.brunno.mangacli.cli;
 
 import br.com.brunno.mangacli.BaseShellTest;
+import br.com.brunno.mangacli.cli.view.SelectMangaView;
 import br.com.brunno.mangacli.manga.MangaRepository;
 import br.com.brunno.mangacli.mangadex.MangadexClient;
 import br.com.brunno.mangacli.mangadex.dto.SearchMangaResult;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.shell.test.ShellTestClient;
 import testHelpers.SearchMangaResultBuilder;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 
+@Import(SelectMangaView.class)
 public class AddTest extends BaseShellTest {
     public static final String COMMAND = "add";
 

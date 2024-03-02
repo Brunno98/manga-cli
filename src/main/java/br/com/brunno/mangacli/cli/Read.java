@@ -1,5 +1,6 @@
 package br.com.brunno.mangacli.cli;
 
+import br.com.brunno.mangacli.cli.view.SelectMangaView;
 import br.com.brunno.mangacli.manga.Manga;
 import br.com.brunno.mangacli.manga.MangaRepository;
 import br.com.brunno.mangacli.mangadex.MangadexClient;
@@ -9,22 +10,19 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jline.terminal.Terminal;
-import org.springframework.shell.component.SingleItemSelector;
-import org.springframework.shell.component.support.SelectorItem;
-import org.springframework.shell.standard.AbstractShellComponent;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @ShellComponent
-public class Read extends AbstractShellComponent {
+public class Read {
 
+    private final SelectMangaView selectMangaView;
     private final MangaRepository mangaRepository;
     private final Terminal terminal;
     private final MangadexClient mangadexClient;
@@ -47,27 +45,15 @@ public class Read extends AbstractShellComponent {
         } else {
             log.debug("Encontrado {} mangas pelo titulo {}", mangasByTitle.size(), title);
 
-            List<SelectorItem<Manga>> items = mangasByTitle.stream()
-                    .map(m -> SelectorItem.of(m.getTitle(), m)).collect(Collectors.toList());
+            Optional<Manga> optionalManga = selectMangaView.display(mangasByTitle);
 
-            SingleItemSelector<Manga, SelectorItem<Manga>> component =
-                    new SingleItemSelector<>(getTerminal(), items, "Manga selection: ", null);
-
-            component.setResourceLoader(getResourceLoader());
-            component.setTemplateExecutor(getTemplateExecutor());
-
-            SingleItemSelector.SingleItemSelectorContext<Manga, SelectorItem<Manga>> context =
-                    component.run(SingleItemSelector.SingleItemSelectorContext.empty());
-
-            Optional<SelectorItem<Manga>> resultItem = context.getResultItem();
-
-            if (resultItem.isEmpty()) {
+            if (optionalManga.isEmpty()) {
                 log.debug("ERROR: result item from Manga Selection is empty!");
                 write("Error!");
                 return;
             }
 
-            manga = resultItem.get().getItem();
+            manga = optionalManga.get();
         }
 
         String mangaId = manga.getId();

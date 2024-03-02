@@ -1,6 +1,7 @@
 package br.com.brunno.mangacli.cli;
 
 import br.com.brunno.mangacli.BaseShellTest;
+import br.com.brunno.mangacli.cli.view.SelectMangaView;
 import br.com.brunno.mangacli.mangadex.MangadexClient;
 import br.com.brunno.mangacli.manga.MangaRepository;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ public class MyCommadTest extends BaseShellTest {
 
     @MockBean
     MangaRepository mangaRepository;
+
+    @MockBean
+    SelectMangaView selectMangaView;
 
     @Test
     void givenANameWhenHelloWorldCommandShouldGreeting() {
