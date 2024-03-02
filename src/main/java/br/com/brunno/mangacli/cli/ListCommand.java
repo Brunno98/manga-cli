@@ -30,12 +30,14 @@ public class ListCommand {
     }
 
     private static String mangaListItem(Manga manga) {
-        return manga.getId() + "\t" + manga.getTitle() +
+        return manga.getTitle() +
                 "\t" +
                 "Chapter " +
                 manga.getReaded() +
                 "/" +
                 manga.getTotalChapters() +
+                "\t" +
+                "Last Chapter readed: " + manga.getLastReadedChapterNumber() +
                 "\t" +
                 manga.nextChapterLocation();
     }

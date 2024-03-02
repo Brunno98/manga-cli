@@ -19,7 +19,10 @@ public class Manga {
     @Setter
     private int totalChapters;
     private int readed;
-    private String lastReadedChapterId;
+    @Setter
+    private String nextChapterToReadId;
+    @Setter
+    private String lastReadedChapterNumber;
 
     public Manga(String id, String title, String description, int totalChapters) {
         this.id = id;
@@ -37,8 +40,8 @@ public class Manga {
     }
 
     public String nextChapterLocation() {
-        if (lastReadedChapterId == null) return "Not found";
-        Chapter lastChapter = new Chapter(lastReadedChapterId, null, null, null, null, null);
+        if (nextChapterToReadId == null) return "Not found";
+        Chapter lastChapter = new Chapter(nextChapterToReadId, null, null, null, null, null);
         return lastChapter.getLocation();
     }
 
