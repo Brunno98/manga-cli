@@ -1,4 +1,4 @@
-package br.com.brunno.mangacli.cli.view;
+package br.com.brunno.mangacli.cli.component;
 
 import br.com.brunno.mangacli.manga.Manga;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class SelectMangaView extends AbstractShellComponent {
+public class SelectMangaComponent extends AbstractShellComponent {
 
     public Optional<Manga> display(List<Manga> mangas) {
         List<SelectorItem<Manga>> items = mangas.stream()

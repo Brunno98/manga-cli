@@ -1,6 +1,6 @@
 package br.com.brunno.mangacli.cli;
 
-import br.com.brunno.mangacli.cli.view.SelectMangaView;
+import br.com.brunno.mangacli.cli.component.SelectMangaComponent;
 import br.com.brunno.mangacli.manga.Manga;
 import br.com.brunno.mangacli.manga.MangaRepository;
 import br.com.brunno.mangacli.mangadex.MangadexClient;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class Add {
     public static final int MAX_ROWS_RETURNED = 5;
 
-    private final SelectMangaView selectMangaView;
+    private final SelectMangaComponent selectMangaComponent;
     private final MangaRepository mangaRepository;
     private final MangadexClient mangadexClient;
     private final Terminal terminal;
@@ -45,7 +45,8 @@ public class Add {
 
         Manga manga;
         if (mangas.size() > 1) {
-            Optional<Manga> optionalManga = selectMangaView.display(mangas);
+            log.debug("Encontrado {} mangas pelo titulo {}", mangas.size(), title);
+            Optional<Manga> optionalManga = selectMangaComponent.display(mangas);
             if (optionalManga.isEmpty()) {
                 log.debug("ERROR: item from Manga Selection is null!");
                 write("Error!");

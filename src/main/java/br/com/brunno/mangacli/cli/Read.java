@@ -1,6 +1,6 @@
 package br.com.brunno.mangacli.cli;
 
-import br.com.brunno.mangacli.cli.view.SelectMangaView;
+import br.com.brunno.mangacli.cli.component.SelectMangaComponent;
 import br.com.brunno.mangacli.manga.Manga;
 import br.com.brunno.mangacli.manga.MangaRepository;
 import br.com.brunno.mangacli.mangadex.MangadexClient;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @ShellComponent
 public class Read {
 
-    private final SelectMangaView selectMangaView;
+    private final SelectMangaComponent selectMangaComponent;
     private final MangaRepository mangaRepository;
     private final Terminal terminal;
     private final MangadexClient mangadexClient;
@@ -45,7 +45,7 @@ public class Read {
         } else {
             log.debug("Encontrado {} mangas pelo titulo {}", mangasByTitle.size(), title);
 
-            Optional<Manga> optionalManga = selectMangaView.display(mangasByTitle);
+            Optional<Manga> optionalManga = selectMangaComponent.display(mangasByTitle);
 
             if (optionalManga.isEmpty()) {
                 log.debug("ERROR: result item from Manga Selection is empty!");
