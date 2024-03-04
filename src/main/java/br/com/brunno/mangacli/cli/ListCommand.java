@@ -1,5 +1,6 @@
 package br.com.brunno.mangacli.cli;
 
+import br.com.brunno.mangacli.cli.component.ListMangaComponent;
 import br.com.brunno.mangacli.manga.Manga;
 import br.com.brunno.mangacli.manga.MangaRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,8 @@ public class ListCommand {
 
     private final MangaRepository mangaRepository;
     private final Terminal terminal;
+    private final ListMangaComponent listMangaComponent;
 
-    //TODO: to implement pagination on findAll
     @ShellMethod(key = "list", value = "List of your tracked mangas")
     public void listMangas() {
         List<Manga> all = mangaRepository.findAll();
@@ -25,21 +26,7 @@ public class ListCommand {
             return;
         }
 
-        write("List of Mangas:");
-        all.forEach(manga -> write(mangaListItem(manga)));
-    }
-
-    private static String mangaListItem(Manga manga) {
-        return manga.getTitle() +
-                "\t" +
-                "Chapter " +
-                manga.getReaded() +
-                "/" +
-                manga.getTotalChapters() +
-                "\t" +
-                "Last Chapter readed: " + manga.getLastReadedChapterNumber() +
-                "\t" +
-                manga.nextChapterLocation();
+        listMangaComponent.run(all);
     }
 
     private void write(String text) {
