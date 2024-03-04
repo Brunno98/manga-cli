@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Spring shell ###
+spring-shell.log
